@@ -1,0 +1,22 @@
+{
+  "name": "CuongPM/Uploader",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [ "upload", "crud", "filee", "repository", "html", "image", "text", "javascript", "laravel"],
+  "authors": [
+    {
+      "name": "Fight Light Diamond",
+      "email": "i.am.m.cuong@gmail.com",
+      "homepage": "http://cuongpm.portalbeanzvn.com/"
+    }
+  ],
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Uploader\\": "./src"
+    }
+  },
+  "require": {
+    "intervention/image": "^2.3"
+  }
+}

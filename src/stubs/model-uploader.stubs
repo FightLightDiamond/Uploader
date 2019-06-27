@@ -1,0 +1,20 @@
+<?php
+
+namespace _namespace_;
+
+use Uploader\UploadModel;
+
+class _class_ extends UploadModel
+{
+    public $fileUpload = ['image' => 1];
+
+    public $pathUpload = ['image' => '/images'];
+
+    public $thumbImage = [
+        image => [
+            '/thumbs/' => [
+                [200, 200], [300, 300], [400, 400]
+            ]
+        ]
+    ];
+}
