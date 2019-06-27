@@ -11,7 +11,7 @@ class _class_ extends UploadModel
     public $pathUpload = ['image' => '/images'];
 
     public $thumbImage = [
-        image => [
+        'image' => [
             '/thumbs/' => [
                 [200, 200], [300, 300], [400, 400]
             ]

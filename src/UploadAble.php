@@ -10,7 +10,6 @@ namespace Uploader;
 
 
 use Illuminate\Support\Facades\Log;
-use Uploader\Facades\FormatFa;
 use Uploader\Facades\UploadFa;
 
 trait UploadAble
@@ -183,17 +182,6 @@ trait UploadAble
         }
     }
 
-    public function uploadImport($file)
-    {
-        $newName = FormatFa::reFileName($file);
-
-        $file->storeAs(
-            $this->table, $newName
-        );
-
-        return storage_path('app/' . $this->table . '/' . $newName);
-    }
-
     public function getModelUploadClass()
     {
         return method_exists($this, 'modelUploader') ? $this->modelUploader() : $this->provideUploader();
@@ -206,5 +194,19 @@ trait UploadAble
         }
 
         return $filter;
+    }
+
+    public function getThumbPath($field, $sizes)
+    {
+        $img = $this->$field;
+        $sizeImage = '_' . implode('_', $sizes) . '.';
+        $imgThumbs = str_replace('.', $sizeImage, $img);
+
+        return $this->getImage($imgThumbs);
+    }
+
+    public function getImage($img)
+    {
+        return config('app.asset_url') . ("/storage{$img}");
     }
 }
