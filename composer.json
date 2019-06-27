@@ -1,5 +1,5 @@
 {
-  "name": "CuongPM/Uploader",
+  "name": "cuongpm/uploader",
   "license": "MIT",
   "type": "library",
   "keywords": [ "upload", "crud", "filee", "repository", "html", "image", "text", "javascript", "laravel"],
