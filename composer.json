@@ -2,7 +2,7 @@
   "name": "cuongpm/uploader",
   "license": "MIT",
   "type": "library",
-  "keywords": [ "upload", "crud", "filee", "repository", "html", "image", "text", "javascript", "laravel"],
+  "keywords": [ "upload", "crud", "file", "repository", "html", "image", "text", "javascript", "laravel"],
   "authors": [
     {
       "name": "Fight Light Diamond",
