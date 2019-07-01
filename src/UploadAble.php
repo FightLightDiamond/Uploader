@@ -22,6 +22,13 @@ trait UploadAble
         return $u->handle();
     }
 
+    public function uploaderSave($input)
+    {
+        $this->uploader($input);
+        $this->fill($input);
+        return $this->save();
+    }
+
     public function uploads($input)
     {
         if (isset($this->fileUpload)) {
@@ -205,8 +212,8 @@ trait UploadAble
         return $this->getImage($imgThumbs);
     }
 
-    public function getImage($img)
+    public function getImage($field)
     {
-        return config('app.asset_url') . ("/storage{$img}");
+        return config('app.asset_url') . ("/storage{$this->$field}");
     }
 }

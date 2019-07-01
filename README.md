@@ -70,10 +70,22 @@ use UploadAble;
 }
 ```
 
-Upload for config register
+Use to code
 
 ```
-$input = request()->all();
-$user = User::first();
-$user->uploader($input);
+$input = request()->only('avatar');
+$user = User::first(); // or $user = new User();
+//upload no save
+$input = $user->uploader($input);
+//save
+$user->fill($input);
+$user->save();
+
+// upload and save
+$user->uploaderSave($input);
+
+// get image
+$user->getImage('avatar');
+//get thumbs
+$user->getThumbPath('avatar', [200, 200])
 ```
