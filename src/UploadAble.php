@@ -209,7 +209,7 @@ trait UploadAble
         $sizeImage = '_' . implode('_', $sizes) . '.';
         $imgThumbs = str_replace('.', $sizeImage, $img);
 
-        return $this->getImage($imgThumbs);
+        return config('app.asset_url') . ("/storage{$imgThumbs}");
     }
 
     public function getImage($field)
