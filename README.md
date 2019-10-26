@@ -49,12 +49,12 @@ class UserUpload extends UploadModel
 
     public $pathUpload = ['avatar' => '/images/users'];
     
-  // thumb for images
+  // thumb for images, auto high or with if null 
     public $thumbImage = [
         'avatar' => [
         // thumbs size
             '/thumbs/' => [
-                [200, 200], [300, 300], [400, 400]
+                [200, 200], [300, NULL], [NULL, 400]
             ]
         ]
     ];

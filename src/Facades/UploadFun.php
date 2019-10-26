@@ -49,7 +49,15 @@ class UploadFun
     private function savingThumb($size)
     {
         $thumbPath = $this->getThumbPath($size);
-        Image::make($this->pathUploaded)->resize($size[0], $size[1])->save($thumbPath);
+
+        if ($size[0] === NULL || $size[1] === NULL) {
+            Image::make($this->pathUploaded)->resize($size[0], $size[1], function ($constraint) {
+                $constraint->aspectRatio();
+            })->save($thumbPath);
+        } else {
+            Image::make($this->pathUploaded)->resize($size[0], $size[1])->save($thumbPath);
+        }
+
         chmod($thumbPath, 0777);
     }
 

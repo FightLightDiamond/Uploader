@@ -45,15 +45,16 @@ trait UploadAble
     private function doing($input, $name, $type)
     {
         if (is_array($input[$name])) {
-            $input = $this->multi($input, $name, $type);
-        } else {
-            if (is_file($input[$name])) {
-                $input = $this->processUploads($input, $name, $type);
-                $this->removeFileExits($name);
-            } else {
-                unset($input[$name]);
-            }
+            return $this->multi($input, $name, $type);
         }
+
+        if (is_file($input[$name])) {
+            $input = $this->processUploads($input, $name, $type);
+            $this->removeFileExits($name);
+            return $input;
+        }
+
+        unset($input[$name]);
 
         return $input;
     }
@@ -73,16 +74,14 @@ trait UploadAble
             if (is_file($input[$name][$index])) {
                 if ($type === 0) {
                     $input[$name][$index] = UploadFa::file($input[$name][$index], $link);
-                } else {
-                    $input[$name][$index] = UploadFa::images(
-                        $input[$name][$index],
-                        $link,
-                        $thumb
-                    );
+                    continue;
                 }
-            } else {
-                unset($input[$name]);
+
+                $input[$name][$index] = UploadFa::images($input[$name][$index], $link, $thumb);
+                continue;
             }
+
+            unset($input[$name]);
         }
 
         return $input;
@@ -100,13 +99,14 @@ trait UploadAble
 
         if ($key === 0) {
             $input[$name] = UploadFa::file($input[$name], $link);
-        } else {
-            $input[$name] = UploadFa::images(
-                $input[$name],
-                $link,
-                isset($this->thumbImage[$name]) ? $this->thumbImage[$name] : []
-            );
+            return $input;
         }
+
+        $input[$name] = UploadFa::images(
+            $input[$name],
+            $link,
+            isset($this->thumbImage[$name]) ? $this->thumbImage[$name] : []
+        );
 
         return $input;
     }
@@ -170,22 +170,20 @@ trait UploadAble
     {
         if (is_dir($dir)) {
             foreach (glob($dir . '/*') as $file) {
-                try {
-                    if (is_file($file)) {
-                        if (strpos($file, $fileName) !== false) {
-                            unlink($file);
-                        }
-                    } else {
-                        $this->scanAndDeleteFile($file, $fileName);
+                if (is_file($file)) {
+                    if (strpos($file, $fileName) !== false) {
+                        unlink($file);
                     }
-                } catch (\Exception $exception) {
-                    logger($exception);
+                    continue;
                 }
+                // is folder
+                $this->scanAndDeleteFile($file, $fileName);
             }
-        } else {
-            if (strpos($dir . '', $fileName) !== false) {
-                unlink($dir . '');
-            }
+            return;
+        }
+
+        if (strpos($dir . '', $fileName) !== false) {
+            unlink($dir . '');
         }
     }
 
