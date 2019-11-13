@@ -14,6 +14,13 @@ use Uploader\Facades\UploadFa;
 
 trait UploadAble
 {
+    private $input;
+
+    private function getBasePath()
+    {
+        return config('filesystems.disks.public.root');
+    }
+
     public function uploader($input)
     {
         $uploader = $this->getModelUploadClass();
@@ -31,89 +38,65 @@ trait UploadAble
 
     public function uploads($input)
     {
+        $this->input = $input;
+
         if (isset($this->fileUpload)) {
-            foreach ($this->fileUpload as $name => $type) {
-                if (isset($input[$name])) {
-                    $input = $this->doing($input, $name, $type);
+            foreach ($this->pathUpload as $name => $type) {
+                if (isset($input[$name]) && request()->hasFile($name)) {
+                    $this->doing($name, $type);
                 }
             }
         }
 
-        return $input;
+        return $this->input;
     }
 
-    private function doing($input, $name, $type)
+    private function doing($name, $type)
     {
-        if (is_array($input[$name])) {
-            return $this->multi($input, $name, $type);
+        if (is_array($this->input[$name])) {
+            $this->multi($name, $type);
+            return;
         }
 
-        if (is_file($input[$name])) {
-            $input = $this->processUploads($input, $name, $type);
-            $this->removeFileExits($name);
-            return $input;
-        }
-
-        unset($input[$name]);
-
-        return $input;
+        $this->processUploads($name, $type);
+        $this->removeFileExits($name);
     }
 
-    private function multi($input, $name, $type)
+    private function multi($name, $type)
     {
-        $folder = '';
-
-        if (isset($this->pathUpload)) {
-            $folder = $this->pathUpload[$name];
-        }
-
-        $link = $this->generatePath($folder, $type);
-        $thumb = isset($this->thumbImage[$name]) ? $this->thumbImage[$name] : [];
-
-        foreach ($input[$name] as $index => $value) {
-            if (is_file($input[$name][$index])) {
-                if ($type === 0) {
-                    $input[$name][$index] = UploadFa::file($input[$name][$index], $link);
-                    continue;
-                }
-
-                $input[$name][$index] = UploadFa::images($input[$name][$index], $link, $thumb);
-                continue;
-            }
-
-            unset($input[$name]);
-        }
-
-        return $input;
-    }
-
-    private function processUploads($input, $name, $key)
-    {
-        $folder = '';
-
-        if (isset($this->pathUpload)) {
-            $folder = $this->pathUpload[$name];
-        }
+        $folder = $this->pathUpload[$name] ?? '';
 
         $link = $this->generatePath($folder);
 
-        if ($key === 0) {
-            $input[$name] = UploadFa::file($input[$name], $link);
-            return $input;
+        foreach ($this->input[$name] as $index => $value) {
+            $item = $this->input[$name][$index];
+
+            if ($type === 0) {
+                $this->input[$name][$index] = UploadFa::file($item, $link);
+                continue;
+            }
+
+            $this->input[$name][$index] = UploadFa::images($item, $link, $this->thumbImage[$name] ?? []);
+            continue;
         }
+    }
 
-        $input[$name] = UploadFa::images(
-            $input[$name],
-            $link,
-            isset($this->thumbImage[$name]) ? $this->thumbImage[$name] : []
-        );
+    private function processUploads($name, $key)
+    {
+        $folder = $this->pathUpload[$name] ?? '';
+        $link = $this->generatePath($folder);
 
-        return $input;
+        if ($key === 0) {
+            $this->input[$name] = UploadFa::file($this->input[$name], $link);
+        } else {
+            $thumbs = $this->thumbImage[$name] ?? [];
+            $this->input[$name] = UploadFa::images($this->input[$name], $link, $thumbs);
+        }
     }
 
     private function generatePath($folder)
     {
-        $basePath = config('filesystems.disks.public.root');
+        $basePath = $this->getBasePath();
 
         if (!file_exists($basePath)) {
             mkdir($basePath, 0777, true);
@@ -140,14 +123,12 @@ trait UploadAble
 
     private function removeFileExits($name)
     {
-        $basePath = config('filesystems.disks.public.root');
+        $basePath = $this->getBasePath();
 
-        if (isset($this->$name) && $this->$name != '') {
-            try {
-                unlink($basePath . ($this->$name));
-            } catch (\Exception $e) {
-                Log::debug($basePath . ($this->$name));
-            }
+        try {
+            unlink($basePath . ($this->$name));
+        } catch (\Exception $e) {
+            Log::debug($basePath . ($this->$name));
         }
 
         $this->removeThumbs($name, $basePath);
@@ -159,10 +140,8 @@ trait UploadAble
         $fileName = array_pop($names);
         $fileNameNoTail = explode('.', $fileName)[0];
 
-        if (isset($this->thumbImage[$name]) && isset($fileNameNoTail)) {
-            foreach (glob($basePath . implode('/', $names) . '*') as $folder) {
-                $this->scanAndDeleteFile($folder, $fileNameNoTail);
-            }
+        foreach (glob($basePath . implode('/', $names) . '*') as $folder) {
+            $this->scanAndDeleteFile($folder, $fileNameNoTail);
         }
     }
 
