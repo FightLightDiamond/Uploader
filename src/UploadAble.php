@@ -140,8 +140,10 @@ trait UploadAble
         $fileName = array_pop($names);
         $fileNameNoTail = explode('.', $fileName)[0];
 
-        foreach (glob($basePath . implode('/', $names) . '*') as $folder) {
-            $this->scanAndDeleteFile($folder, $fileNameNoTail);
+        if (isset($this->thumbImage[$name]) && isset($fileNameNoTail)) {
+            foreach (glob($basePath . implode('/', $names) . '*') as $folder) {
+                $this->scanAndDeleteFile($folder, $fileNameNoTail);
+            }
         }
     }
 
@@ -149,20 +151,22 @@ trait UploadAble
     {
         if (is_dir($dir)) {
             foreach (glob($dir . '/*') as $file) {
-                if (is_file($file)) {
-                    if (strpos($file, $fileName) !== false) {
-                        unlink($file);
+                try {
+                    if (is_file($file)) {
+                        if (strpos($file, $fileName) !== false) {
+                            unlink($file);
+                        }
+                    } else {
+                        $this->scanAndDeleteFile($file, $fileName);
                     }
-                    continue;
+                } catch (\Exception $exception) {
+                    logger($exception);
                 }
-                // is folder
-                $this->scanAndDeleteFile($file, $fileName);
             }
-            return;
-        }
-
-        if (strpos($dir . '', $fileName) !== false) {
-            unlink($dir . '');
+        } else {
+            if (strpos($dir . '', $fileName) !== false) {
+                unlink($dir . '');
+            }
         }
     }
 
