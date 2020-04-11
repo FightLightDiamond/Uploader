@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploader\Facades;
+namespace Cuongpm\Uploader\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

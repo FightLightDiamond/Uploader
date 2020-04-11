@@ -6,7 +6,7 @@
  * Time: 10:12 PM
  */
 
-namespace Uploader\Facades;
+namespace Cuongpm\Uploader\Facades;
 
 use Intervention\Image\Facades\Image;
 

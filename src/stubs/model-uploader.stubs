@@ -2,7 +2,7 @@
 
 namespace _namespace_;
 
-use Uploader\UploadModel;
+use Cuongpm\Uploader\UploadModel;
 
 class _class_ extends UploadModel
 {

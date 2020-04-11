@@ -1,9 +1,9 @@
 <?php
 
-namespace Uploader\Providers;
+namespace Cuongpm\Uploader;
 
 use Illuminate\Support\ServiceProvider;
-use Uploader\Commands\MakeUploaderCommand;
+use Cuongpm\Uploader\Commands\MakeUploaderCommand;
 
 class UploadServiceProvider extends ServiceProvider
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Uploader\Commands;
+namespace Cuongpm\Uploader\Commands;
 
 use Illuminate\Console\Command;
 

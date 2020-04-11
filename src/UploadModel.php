@@ -6,7 +6,7 @@
  * Time: 10:49 AM
  */
 
-namespace Uploader;
+namespace Cuongpm\Uploader;
 
 
 abstract class UploadModel

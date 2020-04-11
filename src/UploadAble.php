@@ -6,11 +6,11 @@
  * Time: 10:20 AM
  */
 
-namespace Uploader;
+namespace Cuongpm\Uploader;
 
 
 use Illuminate\Support\Facades\Log;
-use Uploader\Facades\UploadFa;
+use Cuongpm\Uploader\Facades\UploadFa;
 
 trait UploadAble
 {

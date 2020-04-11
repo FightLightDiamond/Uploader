@@ -38,7 +38,7 @@ Config upload
 namespace App\Uploads;
 
 
-use Uploader\UploadModel;
+use Cuongpm\Uploader\UploadModel;
 
 class UserUpload extends UploadModel
 {
