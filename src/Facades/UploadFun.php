@@ -9,6 +9,7 @@
 namespace Cuongpm\Uploader\Facades;
 
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Str;
 
 class UploadFun
 {
@@ -73,6 +74,6 @@ class UploadFun
     {
         $arrayElement = explode('.', $name);
         $tail = array_pop($arrayElement);
-        return str_random(8) . uniqid() . '.' . $tail;
+        return Str::random(8) . uniqid() . '.' . $tail;
     }
 }
